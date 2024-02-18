@@ -1,6 +1,6 @@
 <img src="docs/assets/ale-logo-color.svg" width="70">
 
-# Alê API - Exemplo base com FastAPI
+# Alê API - Template base com FastAPI
 
 # Contexto Geral
 
