@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  automl:
+    build:
+      context: .
+      # target: development
+    image: fastapi-ale-img
+    container_name: fastapi-ale
+    env_file: .env
+    ports:
+      - 8123:8123
+    volumes:
+      - .:/home/ale
+    environment:
+      - TZ=America/Sao_Paulo
+    restart: unless-stopped

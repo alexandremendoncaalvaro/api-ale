@@ -1,0 +1,151 @@
+[tool.poetry]
+name = "api-ale"
+version = "1.0.0"
+description = "Exemplo base para construir uma API REST com FastAPI"
+authors = [
+    "Alexandre Alvaro <alexandre.alvaro@hotmail.com>",
+]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = ">=3.10.0,<3.13.0"
+fastapi = "^0.109.2"
+uvicorn = "^0.27.1"
+httpx = "^0.26.0"
+pydantic = "^2.6.1"
+
+
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+pip-audit = "^2.7.1"
+taskipy = "^1.12.2"
+pytest-cov = "^4.1.0"
+prospector = "^1.10.3"
+black = "^24.2.0"
+pyclean = "^2.7.6"
+setuptools = "^69.1.0"
+
+
+
+[tool.poetry.group.doc.dependencies]
+mkdocs-material = "^9.5.9"
+mkdocstrings = "^0.24.0"
+mkdocstrings-python = "^1.8.0"
+
+
+
+[tool.taskipy.tasks]
+run = { cmd = """
+    uvicorn app.main:app --host 0.0.0.0 --port 8123 --reload
+    """, help = "Executa o projeto no modo de desenvolvimento" }
+
+
+check = { cmd = """
+    task sec &&
+    task lint
+    """, help = "Aplica o linter e conduz uma verificação completa do projeto" }
+
+
+lint = { cmd = """
+    echo "### Black ##############################################"
+    black . &&
+    echo "### Isort ##############################################"
+    isort . &&
+    echo "### Prospector #########################################"
+    prospector --no-autodetect
+    """, help = "Aplica o linter no código" }
+
+
+docs = { cmd = """
+    echo "### Docs ###############################################"
+    bash ./update_docs.sh
+    mkdocs serve
+    """, help = "Faz o build e serve a documentação do projeto em um servidor web local" }
+
+
+req = { cmd = """
+    echo "### Requirements #######################################"
+    poetry export -o requirements.txt --without-hashes
+    echo "requirements.txt exported"
+    """, help = "Exporta o arquivo 'requirements.txt'" }
+
+
+sec = { cmd = """
+    echo "### Pip Audit ##########################################"
+    pip-audit
+    """, help = "Realiza uma auditoria de segurança nas dependências do pip" }
+
+
+test = { cmd = """
+    echo "### Pytest #############################################"
+    pytest -s -x
+    """, help = "Executa todos os testes unitários" }
+
+
+cov = { cmd = """
+    task report
+    """, help = "Executa os testes e abre a pasta do relatório HTML de cobertura de testes" }
+
+
+report = { cmd = """
+    echo "### Test Coverage Report ###############################"
+    echo "Open index.html in htmlcov folder to view coverage report"
+    cd $(pwd)/htmlcov
+    explorer.exe .
+    """, help = "Abre a pasta do relatório HTML de cobertura de testes" }
+
+
+docker = { cmd = """
+    echo "### Docker #############################################"
+    docker compose up
+    """, help = "Faz o build da imagem e executa o container docker com docker-compose" }
+
+
+clean = { cmd = """
+    echo "### Clean ###############################################"
+    pyclean .
+    """, help = "Limpa o cache do projeto" }
+
+
+docs_build = { cmd = """
+    echo "### Docs ###############################################"
+    bash ./update_docs.sh
+    mkdocs build
+    """, help = "Faz o build da documentação do projeto" }
+
+
+lint_check = { cmd = """
+    echo "### Black ##############################################"
+    black --check --diff . &&
+    echo "### Isort ##############################################"
+    isort --check --diff . &&
+    echo "### Prospector #########################################"
+    prospector --no-autodetect
+    """, help = "Imprime no terminal relatório de linting, sem aplicar modificações" }
+
+
+pre_cov = { cmd = """
+    task test
+    """, help = "Executa automaticamente os testes antes do comando 'task cov'" }
+
+
+post_check = { cmd = """
+    task req &&
+    task docs_build &&
+    task test &&
+    echo "Run the command 'task report' to open html coverage report folder"
+    echo ""
+    """, help = "Executa automaticamente após o comando 'task check'" }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--cov=app --cov-report=html --cov-report=term --doctest-modules"
+
+[tool.isort]
+profile = "black"

@@ -1,0 +1,21 @@
+site_name: Docs | Alê API
+repo_url: https://github.com/alexandremendoncaalvaro/ale-api
+repo_name: ale-api
+edit_uri: https://github.com/alexandremendoncaalvaro/ale-api/tree/main/docs
+theme:
+  name: material
+  language: pt-BR
+  logo: assets/ale-logo-color.svg
+  favicon: assets/ale-logo-branco.svg
+
+markdown_extensions:
+  - attr_list
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [app]

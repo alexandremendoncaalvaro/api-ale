@@ -1,0 +1,11 @@
+{
+    "python.testing.pytestArgs": [
+        "app",
+        "--cov=app",
+        "--cov-report=html",
+        "--cov-report=term-missing",
+        "--doctest-modules"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
